@@ -1,10 +1,18 @@
 #!/usr/bin/env python3
 """Claude Code statusLine command. Reads JSON payload from stdin, prints summary."""
+import argparse
 import json
 import sys
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--threshold", type=float, default=70.0,
+        help="コンテキスト使用率がこの値(%%）以上になると '!' を表示 (デフォルト: 70)",
+    )
+    args = parser.parse_args()
+
     try:
         payload = json.load(sys.stdin)
     except Exception:
@@ -14,13 +22,12 @@ def main():
     effort = (payload.get("effort") or {}).get("level")
     cw = payload.get("context_window") or {}
     used_pct = cw.get("used_percentage")
-    exceeds_200k = bool(payload.get("exceeds_200k_tokens"))
 
     parts = [model_name]
     if effort:
         parts.append(effort)
     if isinstance(used_pct, (int, float)):
-        marker = "!" if exceeds_200k else ""
+        marker = "!" if used_pct >= args.threshold else ""
         parts.append(f"{used_pct:.0f}%{marker}")
 
     print(" | ".join(parts))

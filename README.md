@@ -18,7 +18,7 @@ Opus 4.6 | high | 42%
 {
   "statusLine": {
     "type": "command",
-    "command": "/path/to/claude-code-config/statusline/statusline.py",
+    "command": "/path/to/claude-code-config/statusline/statusline.py --threshold 70",
     "refreshInterval": 5
   }
 }
@@ -28,6 +28,18 @@ Opus 4.6 | high | 42%
 
 ```bash
 chmod +x statusline/statusline.py
+```
+
+### オプション
+
+| オプション | デフォルト | 説明 |
+|---|---|---|
+| `--threshold <N>` | `70` | コンテキスト使用率が N% 以上になると `!` を表示 |
+
+しきい値を変更する場合は `command` にオプションを追加:
+
+```json
+"command": "/path/to/statusline.py --threshold 80"
 ```
 
 ### 表示フォーマット
@@ -40,4 +52,4 @@ chmod +x statusline/statusline.py
 |---|---|---|
 | model | `Opus 4.6` | モデルの表示名 |
 | effort | `high` | 未設定時は省略 |
-| context% | `42%` | コンテキストウィンドウ使用率。200kトークン超で `!` 付与 |
+| context% | `42%` | コンテキストウィンドウ使用率。`--threshold`（デフォルト70%）以上で `!` 付与 |
